@@ -5,9 +5,9 @@ void JMP( byte2 adress ){
 }
  
 void CLEAR_DISPLAY(){
-	for(byte i = 0; i < HEIGHT; ++i){
-		for(byte j = 0; j < WIDTH; ++j)
-			display[i][j] = OFF;
+	for(byte x = 0; x < MAX_WIDTH; ++x){
+		for(byte y = 0; y < MAX_HEIGHT; ++y)
+			display[x][y] = OFF;
 	}
 }
 
@@ -113,24 +113,40 @@ void JUMP2( byte2 adress){
 }
 
 void RAND( byte2 X, byte __byte ){
-	//srand(time(0));
+	srand(time(0));
 	byte random = rand();
-	//V[X] = (rand() % 256) & __byte;
+	//printf("random = %d\n", random);
+	//printf("V[X] = %d\n", random & __byte);
 	V[X] = random & __byte;
 }
 
 void DRAW( byte X, byte Y, byte2 height, byte2 adress ){
-
-	byte coordinate_X = V[X];
-	byte coordinate_Y = V[Y];
-	
-	for(byte i = 0; i < height; ++i){
-		if(coordinate_Y >= HEIGHT)
-			coordinate_Y = 0;	
-		draw_line( coordinate_X, coordinate_Y, adress);
-		++coordinate_Y;
-		++adress;
+	byte sprite[8][15];
+	for(byte y = 0; y < height; ++y){
+		for(byte x = 0; x < 8; ++x){
+			sprite[x][y] = ram[adress++];
+		}
 	}
+
+	byte X_coordinate = V[X];
+	byte Y_coordinate = V[Y];
+
+	V[0xF] = 0;
+
+	for(byte y = 0; y < height; ++y){
+		for(byte x = 0; x < 8; ++x){
+			if(X_coordinate > MAX_WIDTH) X_coordinate = 0;
+			if(Y_coordinate > MAX_HEIGHT) Y_coordinate = 0;			
+			
+			if(display[X_coordinate][Y_coordinate] == ON && sprite[x][y] == OFF){
+				V[0xF] = 1;
+				display[X_coordinate][Y_coordinate] = sprite[x][y];
+			}
+			if(display[X_coordinate][Y_coordinate] == OFF) 
+				display[X_coordinate][Y_coordinate] = sprite[x][y];
+	
+		}
+	}	
 }
 
 void IS_KEY_PRESSED( byte2 X ){

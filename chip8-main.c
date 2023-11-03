@@ -7,15 +7,15 @@ void fetch_opcode(){
 }
 
 void decode_and_execute_opcode(){
-	byte X = Get_RegisterX( opcode );
-	byte Y = Get_RegisterY( opcode );
-	byte __byte = Get_Byte( opcode );
-	byte2 adress = Get_Adress( opcode );	
-	byte lastBits = Get_Last_Bits( opcode ); 
+	byte X = Get_RegisterX(opcode);
+	byte Y = Get_RegisterY(opcode);
+	byte __byte = Get_Byte(opcode);
+	byte2 adress = Get_Adress(opcode);	
+	byte lastBits = Get_Last_Bits(opcode); 
 	
-	switch( opcode & 0xF000 ){
+	switch(opcode & 0xF000){
 		case 0x0000:
-				switch( opcode & 0x0FFF ){
+				switch(opcode & 0x0FFF){
 					case 0x00E0:
 								CLEAR_DISPLAY();
 					break;
@@ -26,73 +26,73 @@ void decode_and_execute_opcode(){
 		break;
 		
 		case 0x1000:
-				JMP( adress );
+				JMP(adress);
 		break;
 
 		case 0x2000:
-				CALL_SUBROUTINE( adress );
+				CALL_SUBROUTINE(adress);
 		break;
 		
 		case 0x3000:
-				IF_BYTE( X, __byte );
+				IF_BYTE(X, __byte);
 		break;
 		
 		case 0x4000:
-				IF_NOT_BYTE( X, __byte );
+				IF_NOT_BYTE(X, __byte);
 		break;
 
 		case 0x5000:
-				IF_VAR( X, Y );
+				IF_VAR(X, Y);
 		break;
 		
 		case 0x9000:
-				IF_NOT_VAR( X, Y );
+				IF_NOT_VAR(X, Y);
 		break;
 
 		case 0x6000:
-				LOAD_BYTE( X, __byte );
+				LOAD_BYTE(X, __byte);
 		break;
 
 		case 0x7000:
-				ADD( X, __byte );
+				ADD(X, __byte);
 		break;
 
 		case 0x8000:
-				switch( opcode & 0x000F ){
+				switch(opcode & 0x000F){
 						case 0x0000:
-								LOAD_VAR( X, Y );	
+								LOAD_VAR(X, Y);	
 						break;	
 						
 						case 0x0001:
-								OR( X, Y );
+								OR(X, Y);
 						break;	
 						
 						case 0x0002:
-								AND( X, Y );
+								AND(X, Y);
 						break;
 						
 						case 0x0003:
-								XOR( X, Y );
+								XOR(X, Y);
 						break;
 						
 						case 0x0004:
-								ADD_CARRY( X, Y );
+								ADD_CARRY(X, Y);
 						break;
 	
 						case 0x0005:
-								SUB_Y_FROM_X( X, Y );
+								SUB_Y_FROM_X(X, Y);
 						break;
 							
 						case 0x0007:
-								SUB_X_FROM_Y( X, Y );
+								SUB_X_FROM_Y(X, Y);
 						break;
 
 						case 0x0006:
-								SHIFT_RIGHT( X );
+								SHIFT_RIGHT(X);
 						break;
 
 						case 0x000E:
-								SHIFT_LEFT( X );
+								SHIFT_LEFT(X);
 						break;
 						
 				}		
@@ -100,11 +100,11 @@ void decode_and_execute_opcode(){
 		break;
 
 		case 0xA000:
-				LOAD_ADRESS( adress );	
+				LOAD_ADRESS(adress);	
 		break;
 		
 		case 0xB000:
-				JUMP2( adress );
+				JUMP2(adress);
 		break;
 
 		case 0xC000:
@@ -114,55 +114,59 @@ void decode_and_execute_opcode(){
 		break;
 
 		case 0xD000:
-				DRAW( X, Y, lastBits, I);
+				DRAW(X, Y, lastBits, I);
 		break;
 
 		case 0xE000:
-				switch( opcode & 0x00FF){
+				switch(opcode & 0x00FF){
 	
 					case 0x009E:
-							IS_KEY_PRESSED( X );	
+							IS_KEY_PRESSED(X);	
 					break;
 
 					case 0x00A1:
-							IS_KEY_NOT_PRESSED( X );
+							IS_KEY_NOT_PRESSED(X);
 					break;
 
 				}
 
 		case 0xF000:
-				switch( opcode & 0x00FF){
+				switch(opcode & 0x00FF){
 
 					case 0x0007:
-							GET_DELAY( X );
+							GET_DELAY(X);
 					break;
 	
 					case 0x000A:
-							WAIT_FOR_KEY( X );	
+							WAIT_FOR_KEY(X);	
 					break;
 
 					case 0x0018:
-							SET_SOUND_TIMER( X );
+							SET_SOUND_TIMER(X);
 					break;
 
 					case 0x001E:
-							ADD_TO_ADRESS( X );
+							ADD_TO_ADRESS(X);
 					break;
 
 					case 0x0029:
-							SET_ADRESS_SPRITE( X );
+							SET_ADRESS_SPRITE(X);
 					break;
 
 					case 0x0033:
-							BINARY_CODED_DECIMAL( X );
+							BINARY_CODED_DECIMAL(X);
 					break;
 
 					case 0x0055:
-							DUMP_REGISTERS( X );
+							DUMP_REGISTERS(X);
 					break;
 
 					case 0x0065:
-							LOAD_REGISTERS( X );
+							LOAD_REGISTERS(X);
+					break;
+
+					case 0x0015:
+							SET_DELAY(X);
 					break;
 
 				}
@@ -195,7 +199,6 @@ void draw_screen( SDL_Surface *screenSurface ){
 
 void load_rom( FILE *arq ){
 		char c = 'a';
-		//char b = 'a';
 		int i = 0x200;
 
 		fseek(arq, 0, SEEK_END);
@@ -204,17 +207,6 @@ void load_rom( FILE *arq ){
 
 		do{
 				c = fgetc(arq);
-
-				/*if( c == EOF){
-					b = c;
-					if ( (c = fgetc(arq)) != EOF){
-						ram[i] = b;
-						++i;
-						ram[i] = c;	
-					}
-				}else
-					ram[i] = c; 
-				*/
 
 				ram[i] = c;
 				++i;
@@ -256,15 +248,9 @@ int main(int argc, char **argv){
 
 	fclose(arq);
 
-/*	byte v = 0;
-	for(int i = 512; i < 4096; ++i){
-		++v;
-		printf("%02x ", ram[i]);	
-		if( v == 16){
-			printf("\n");
-			v = 0;
-		}
-	}*/
+
+
+	const short int frequency = 500;
 
 	SDL_Window *window = NULL;
 
@@ -282,6 +268,8 @@ int main(int argc, char **argv){
 
 				CLEAR_DISPLAY();
 				unsigned short int quit = FALSE;
+				unsigned short cycle = 0;
+				unsigned short timer_cycle = 0;
 
 				while(quit == FALSE){
 
@@ -298,7 +286,20 @@ int main(int argc, char **argv){
 					if( PC >= 4096)
 						quit = TRUE;
 
-					SDL_Delay(3);
+					SDL_Delay(1000/frequency);
+
+					if(cycle >= 100){
+						cycle = 0;
+						timer_cycle = 0;	
+					}else{
+						++cycle;
+					}
+					
+					if(timer_cycle < 60){
+						if(delay_timer > 0) --delay_timer;
+						if(sound_timer > 0) --sound_timer;	
+						++timer_cycle;
+					}
 					
 				}
 			}
