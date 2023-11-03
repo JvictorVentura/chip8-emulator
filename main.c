@@ -6,12 +6,14 @@ void fetch_opcode(){
 	PC += 2;
 }
 
+
 void decode_and_execute_opcode(){
 	byte X = Get_RegisterX(opcode);
 	byte Y = Get_RegisterY(opcode);
 	byte __byte = Get_Byte(opcode);
 	byte2 adress = Get_Adress(opcode);	
 	byte lastBits = Get_Last_Bits(opcode); 
+
 	
 	switch(opcode & 0xF000){
 		case 0x0000:
@@ -129,7 +131,7 @@ void decode_and_execute_opcode(){
 					break;
 
 				}
-
+		break;
 		case 0xF000:
 				switch(opcode & 0x00FF){
 
@@ -171,13 +173,12 @@ void decode_and_execute_opcode(){
 
 				}
 			break;	
-
-		break;
-
+		
 		default:
 			printf("opcode nao reconhecido\n");
 	}
-
+	
+	printf("%x\n", opcode);
 }
 
 void draw_screen( SDL_Surface *screenSurface ){
@@ -185,10 +186,10 @@ void draw_screen( SDL_Surface *screenSurface ){
 		pixel.w = 10;
 		pixel.h = 10;
 
-		for( byte i = 0; i < HEIGHT; ++i ){
-			for( byte j = 0; j < WIDTH; ++j){
-				pixel.x = j * 10;
-				pixel.y = i * 10;
+		for( byte i = 0; i < MAX_WIDTH; ++i ){
+			for( byte j = 0; j < MAX_HEIGHT; ++j){
+				pixel.x = i * 10;
+				pixel.y = j * 10;
 				if( display[i][j] == ON){
 					SDL_FillRect( screenSurface, &pixel, 0xFFFFFF);
 				}else
@@ -235,7 +236,7 @@ int main(int argc, char **argv){
 	if(argc == 2){
 		arq = fopen(argv[1], "r");
 	}else{
-		arq = fopen("./test_opcode.ch8", "r");
+		//arq = fopen("./test_opcode.ch8", "r");
 	}
 	
 	
@@ -259,7 +260,7 @@ int main(int argc, char **argv){
 	if(SDL_Init(SDL_INIT_VIDEO < 0)){
 			printf("Erro: %s\n", SDL_GetError());			
 	}else{
-			window = SDL_CreateWindow("Chip8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH * 10, HEIGHT * 10, SDL_WINDOW_SHOWN);
+			window = SDL_CreateWindow("Chip8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, MAX_WIDTH * 10, MAX_HEIGHT * 10, SDL_WINDOW_SHOWN);
 			if(window == NULL){
 				printf("Erro na janela: %s\n", SDL_GetError());
 			}else{
@@ -300,7 +301,6 @@ int main(int argc, char **argv){
 						if(sound_timer > 0) --sound_timer;	
 						++timer_cycle;
 					}
-					
 				}
 			}
 	}
