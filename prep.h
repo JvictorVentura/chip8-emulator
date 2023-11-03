@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <SDL2/SDL.h>
-#define WIDTH 64
-#define HEIGHT 32
+#define MAX_WIDTH 64
+#define MAX_HEIGHT 32
 
 #define ON 1
 #define OFF 0
@@ -42,7 +42,7 @@ byte2 opcode = 0;
       0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
  
-byte display[HEIGHT][WIDTH];
+byte display[MAX_WIDTH][MAX_HEIGHT];
 
 byte Check_least_significant_bit( byte var ){
 	if( (var & 0x1) == 0x1)
@@ -58,35 +58,7 @@ byte Check_most_significant_bit( byte var ){
 		return 0;
 }
 
-void xor_pixel( byte coordinate_X, byte coordinate_Y, byte sprite_pixel){
-
-	if( sprite_pixel == display[coordinate_Y][coordinate_X]){
-			if(sprite_pixel == ON) // Checking collision	
-				V[0xF] = 1;
-		
-			display[coordinate_Y][coordinate_X] = OFF;
-	}else
-			display[coordinate_Y][coordinate_X] = ON;
-		
-}
-
-void draw_line( byte coordinate_X, byte coordinate_Y, byte2 adress){
-	byte mask = 0x80;
-	for(byte i = 0; i < 8; ++i){
-		if( coordinate_X >= WIDTH )
-			coordinate_X = 0;
-	
-		if( (ram[adress] & mask) == mask)
-			xor_pixel( coordinate_X, coordinate_Y, 1);
-		else
-			xor_pixel( coordinate_X, coordinate_Y, 0);
-		
-	
-		mask >>= 1;
-
-		++coordinate_X;
-	}
-}
+//void draw_line( byte coordinate_X, byte coordinate_Y, byte2 adress){}
 
 byte Get_Key(){
 	byte quit = FALSE;
