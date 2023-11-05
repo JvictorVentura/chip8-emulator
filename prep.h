@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #define MAX_WIDTH 64
 #define MAX_HEIGHT 32
+#include <stdint.h>
 
 #define ON 1
 #define OFF 0
@@ -10,20 +11,18 @@
 #define TRUE 1
 #define FALSE 0
 
-typedef unsigned short int byte2;
-typedef unsigned char byte;
  
-byte  V[16];
-byte2 I;
-byte delay_timer;
-byte sound_timer;
+uint8_t  V[16];
+uint16_t I;
+uint8_t delay_timer;
+uint8_t sound_timer;
 unsigned short int PC;
 unsigned short int stack[16];
-byte stack_pointer;
-byte Key = 0;
-byte2 opcode = 0;
+uint8_t stack_pointer;
+uint8_t Key = 0;
+uint16_t opcode = 0;
  
-  byte ram[4096]= {
+  uint8_t ram[4096]= {
       0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
       0x20, 0x60, 0x20, 0x20, 0x70, // 1
       0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -42,26 +41,26 @@ byte2 opcode = 0;
       0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
  
-byte display[MAX_WIDTH][MAX_HEIGHT];
+uint8_t display[MAX_WIDTH][MAX_HEIGHT];
 
-byte Check_least_significant_bit( byte var ){
+uint8_t Check_least_significant_bit( uint8_t var ){
 	if( (var & 0x1) == 0x1)
 		return 1;
 	else
 		return 0;
 }
 
-byte Check_most_significant_bit( byte var ){
+uint8_t Check_most_significant_bit( uint8_t var ){
 	if( (var & 0x80) == 0x80)
 		return 1;
 	else
 		return 0;
 }
 
-//void draw_line( byte coordinate_X, byte coordinate_Y, byte2 adress){}
+//void draw_line( uint8_t coordinate_X, uint8_t coordinate_Y, uint16_t address){}
 
-byte Get_Key(){
-	byte quit = FALSE;
+uint8_t Get_Key(){
+	uint8_t quit = FALSE;
 	SDL_Event even;
 
 	while( quit == FALSE){
@@ -129,23 +128,23 @@ byte Get_Key(){
 	return 0x10;
 }
 
-byte2 Get_Adress( byte2 opcode ){
+uint16_t Get_Address( uint16_t opcode ){
 	return opcode & 0x0FFF;
 }
 
-byte Get_Byte( byte2 opcode ){
+uint8_t Get_Byte( uint16_t opcode ){
 	return opcode & 0x00FF;
 }
 
-byte Get_RegisterX( byte2 opcode ){
+uint8_t Get_RegisterX( uint16_t opcode ){
 	return (opcode & 0x0F00) >> 8;
 }
 
-byte Get_RegisterY( byte2 opcode ){
+uint8_t Get_RegisterY( uint16_t opcode ){
 	return (opcode & 0x00F0) >> 4;
 }
 
-byte Get_Last_Bits( byte2 opcode){
+uint8_t Get_Last_Bits( uint16_t opcode){
 	return opcode & 0x000F;
 }
 
@@ -213,4 +212,11 @@ void update_Key_Pressed(){
 
 	}
 
+}
+
+
+void getSprite(uint8_t *sprite[8], uint8_t sprite_height, uint16_t address){
+	for(short i = 0; i < sprite_height; ++i){
+		*sprite[i] = ram[address];
+	}
 }

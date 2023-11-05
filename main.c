@@ -8,11 +8,11 @@ void fetch_opcode(){
 
 
 void decode_and_execute_opcode(){
-	byte X = Get_RegisterX(opcode);
-	byte Y = Get_RegisterY(opcode);
-	byte __byte = Get_Byte(opcode);
-	byte2 adress = Get_Adress(opcode);	
-	byte lastBits = Get_Last_Bits(opcode); 
+	uint8_t X = Get_RegisterX(opcode);
+	uint8_t Y = Get_RegisterY(opcode);
+	uint8_t byte = Get_Byte(opcode);
+	uint16_t adress = Get_Address(opcode);	
+	uint8_t lastBits = Get_Last_Bits(opcode); 
 
 	
 	switch(opcode & 0xF000){
@@ -36,11 +36,11 @@ void decode_and_execute_opcode(){
 		break;
 		
 		case 0x3000:
-				IF_BYTE(X, __byte);
+				IF_BYTE(X, byte);
 		break;
 		
 		case 0x4000:
-				IF_NOT_BYTE(X, __byte);
+				IF_NOT_BYTE(X, byte);
 		break;
 
 		case 0x5000:
@@ -52,11 +52,11 @@ void decode_and_execute_opcode(){
 		break;
 
 		case 0x6000:
-				LOAD_BYTE(X, __byte);
+				LOAD_BYTE(X, byte);
 		break;
 
 		case 0x7000:
-				ADD(X, __byte);
+				ADD(X, byte);
 		break;
 
 		case 0x8000:
@@ -110,9 +110,9 @@ void decode_and_execute_opcode(){
 		break;
 
 		case 0xC000:
-				RAND( X, __byte);
-				printf("numero aleatorio = %d\n", V[X]);
-				printf("byte = %02x\n\n", __byte);
+				RAND( X, byte);
+				// printf("numero aleatorio = %d\n", V[X]);
+				// printf("uint8_t = %02x\n\n", byte);
 		break;
 
 		case 0xD000:
@@ -178,7 +178,7 @@ void decode_and_execute_opcode(){
 			printf("opcode nao reconhecido\n");
 	}
 	
-	printf("%x\n", opcode);
+	// printf("%x\n", opcode);
 }
 
 void draw_screen( SDL_Surface *screenSurface ){
@@ -186,8 +186,8 @@ void draw_screen( SDL_Surface *screenSurface ){
 		pixel.w = 10;
 		pixel.h = 10;
 
-		for( byte i = 0; i < MAX_WIDTH; ++i ){
-			for( byte j = 0; j < MAX_HEIGHT; ++j){
+		for( uint8_t i = 0; i < MAX_WIDTH; ++i ){
+			for( uint8_t j = 0; j < MAX_HEIGHT; ++j){
 				pixel.x = i * 10;
 				pixel.y = j * 10;
 				if( display[i][j] == ON){

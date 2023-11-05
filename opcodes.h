@@ -1,20 +1,20 @@
 #include "prep.h"
 
-void JMP( byte2 adress ){
-	PC = adress;
+void JMP( uint16_t address ){
+	PC = address;
 }
  
 void CLEAR_DISPLAY(){
-	for(byte x = 0; x < MAX_WIDTH; ++x){
-		for(byte y = 0; y < MAX_HEIGHT; ++y)
+	for(uint8_t x = 0; x < MAX_WIDTH; ++x){
+		for(uint8_t y = 0; y < MAX_HEIGHT; ++y)
 			display[x][y] = OFF;
 	}
 }
 
-void CALL_SUBROUTINE(byte2 adress){
+void CALL_SUBROUTINE(uint16_t address){
 	++stack_pointer;
 	stack[stack_pointer] = PC;
-	PC = adress;
+	PC = address;
 	
 }
 
@@ -23,39 +23,39 @@ void RETURN_SUBROUTINE(){
 	--stack_pointer;
 }
 
-void IF_BYTE( byte2 X, byte __byte){
-	if(V[X] == __byte)
+void IF_BYTE( uint16_t X, uint8_t byte){
+	if(V[X] == byte)
 		PC += 2; //talvez mudar dps	
 }
 
-void IF_NOT_BYTE( byte2 X, byte __byte){
-	if(V[X] != __byte)
+void IF_NOT_BYTE( uint16_t X, uint8_t byte){
+	if(V[X] != byte)
 		PC += 2; //talvez mudar dps
 }
 
-void IF_VAR( byte2 X, byte2 Y){
+void IF_VAR( uint16_t X, uint16_t Y){
 	if(V[X] == V[Y])
 		PC += 2; //talvez mudar dps
 }
 
-void IF_NOT_VAR( byte2 X, byte2 Y){
+void IF_NOT_VAR( uint16_t X, uint16_t Y){
 	if(V[X] != V[Y])
 		PC += 2; //talvez mudar dps
 }
 
-void LOAD_BYTE( byte2 X, byte __byte){
-	V[X] = __byte;
+void LOAD_BYTE( uint16_t X, uint8_t byte){
+	V[X] = byte;
 }
 
-void LOAD_VAR( byte2 X, byte2 Y){
+void LOAD_VAR( uint16_t X, uint16_t Y){
 	V[X] = V[Y];
 }
 
-void ADD( byte2 X, byte __byte){
-	V[X] += __byte;
+void ADD( uint16_t X, uint8_t byte){
+	V[X] += byte;
 }
 
-void ADD_CARRY( byte2 X, byte2 Y){
+void ADD_CARRY( uint16_t X, uint16_t Y){
 	if( (V[X] + V[Y]) > 255)
 		V[0xF] = 1;
 	else
@@ -64,19 +64,19 @@ void ADD_CARRY( byte2 X, byte2 Y){
 	V[X] += V[Y];
 }
 
-void OR( byte2 X, byte2 Y){
+void OR( uint16_t X, uint16_t Y){
 	V[X] |= V[Y];
 }
 
-void AND( byte2 X, byte2 Y){
+void AND( uint16_t X, uint16_t Y){
 	V[X] &= V[Y];
 }
 
-void XOR( byte2 X, byte2 Y){
+void XOR( uint16_t X, uint16_t Y){
 	V[X] ^= V[Y];
 }
 
-void SUB_Y_FROM_X( byte2 X, byte2 Y){
+void SUB_Y_FROM_X( uint16_t X, uint16_t Y){
 	if(V[X] > V[Y])
 		V[0xF] = 1;
 	else
@@ -85,7 +85,7 @@ void SUB_Y_FROM_X( byte2 X, byte2 Y){
 	V[X] -= V[Y];
 }
 
-void SUB_X_FROM_Y( byte2 X, byte2 Y){
+void SUB_X_FROM_Y( uint16_t X, uint16_t Y){
 	if(V[Y] > V[X])
 		V[0xF] = 1;
 	else
@@ -94,81 +94,90 @@ void SUB_X_FROM_Y( byte2 X, byte2 Y){
 	V[X] = V[Y] - V[X];
 }
 
-void SHIFT_RIGHT( byte2 X ){
+void SHIFT_RIGHT( uint16_t X ){
 	V[0xF] = Check_least_significant_bit( V[X] );
 	V[X] >>= 1;	
 }
 
-void SHIFT_LEFT( byte2 X ){
+void SHIFT_LEFT( uint16_t X ){
 	V[0xF] = Check_most_significant_bit( V[X] );
 	V[X] <<= 1;
 }
 
-void LOAD_ADRESS( byte2 adress ){
-	I = adress;	
+void LOAD_ADRESS( uint16_t address ){
+	I = address;	
 }
 
-void JUMP2( byte2 adress){
-	PC = V[0] + adress;
+void JUMP2( uint16_t address){
+	PC = V[0] + address;
 }
 
-void RAND( byte2 X, byte __byte ){
+void RAND( uint16_t X, uint8_t byte ){
 	srand(time(0));
-	byte random = rand();
+	uint8_t random = rand();
 	//printf("random = %d\n", random);
-	//printf("V[X] = %d\n", random & __byte);
-	V[X] = random & __byte;
+	//printf("V[X] = %d\n", random & byte);
+	V[X] = random & byte;
 }
 
-void DRAW( byte X, byte Y, byte2 height, byte2 adress ){
-	byte sprite[8][15];
-	for(byte y = 0; y < height; ++y){
-		for(byte x = 0; x < 8; ++x){
-			sprite[x][y] = ram[adress++];
+void DRAW( uint8_t X, uint8_t Y, uint16_t height, uint16_t address ){
+	uint8_t sprite[8][15];
+	uint8_t temp = 0;
+	uint8_t mask = 0x8;
+	for(uint8_t y = 0; y < height; ++y){
+		temp = ram[address++];
+		mask= 0x8;
+		for(uint8_t x = 0; x < 8; ++x, mask>>=1){
+			if((temp & mask) != 0)
+				sprite[x][y] = ON;
+			else
+				sprite[x][y] = OFF;
+
 		}
 	}
 
-	byte X_coordinate = V[X];
-	byte Y_coordinate = V[Y];
+	uint8_t X_coordinate = V[X];
+	uint8_t Y_coordinate = V[Y];
 
 	V[0xF] = 0;
 
-	for(byte y = 0; y < height; ++y){
-		for(byte x = 0; x < 8; ++x){
-			if(X_coordinate > MAX_WIDTH) X_coordinate = 0;
-			if(Y_coordinate > MAX_HEIGHT) Y_coordinate = 0;			
+	for(uint8_t y = 0; y < height; ++y){
+		for(uint8_t x = 0; x < 8; ++x){
+			if(X_coordinate >= MAX_WIDTH) X_coordinate = 0;
+			if(Y_coordinate >= MAX_HEIGHT) Y_coordinate = 0;			
 			
-			if(display[X_coordinate][Y_coordinate] == ON && sprite[x][y] == OFF){
+			if(display[X_coordinate][Y_coordinate] == ON && sprite[x][y] == ON){
 				V[0xF] = 1;
-				display[X_coordinate][Y_coordinate] = sprite[x][y];
-			}
-			if(display[X_coordinate][Y_coordinate] == OFF) 
+				display[X_coordinate][Y_coordinate] = OFF;
+			}else
 				display[X_coordinate][Y_coordinate] = sprite[x][y];
 	
 		}
 	}	
 }
 
-void IS_KEY_PRESSED( byte2 X ){
+
+
+void IS_KEY_PRESSED( uint16_t X ){
 	if( Key == V[X])
 		PC += 2;
 }
 
-void IS_KEY_NOT_PRESSED( byte2 X ){
+void IS_KEY_NOT_PRESSED( uint16_t X ){
 	if( Key != V[X])
 		PC += 2;
 }
 
-void WAIT_FOR_KEY( byte2 X ){
+void WAIT_FOR_KEY( uint16_t X ){
 	V[X] = Get_Key();
 }
 
-void SET_ADRESS_SPRITE( byte2 X ){
+void SET_ADRESS_SPRITE( uint16_t X ){
 	I = V[X] * 5;	
 }
 
-void BINARY_CODED_DECIMAL( byte2 X ){
-	byte remainder = 0;
+void BINARY_CODED_DECIMAL( uint16_t X ){
+	uint8_t remainder = 0;
 
 	ram[I] = V[X] / 100;
 	remainder = V[X] % 100;
@@ -177,28 +186,28 @@ void BINARY_CODED_DECIMAL( byte2 X ){
 	ram[I + 2] = remainder;
 }
 
-void DUMP_REGISTERS( byte2 X ){
-	for( byte j = 0; j <= X; ++j)
+void DUMP_REGISTERS( uint16_t X ){
+	for( uint8_t j = 0; j <= X; ++j)
 		ram[I + j] = V[j];	
 }
 
-void LOAD_REGISTERS( byte2 X ){
-	for( byte j = 0; j <= X; ++j)
+void LOAD_REGISTERS( uint16_t X ){
+	for( uint8_t j = 0; j <= X; ++j)
 		V[j] = ram[I + j];	
 }
 
-void ADD_TO_ADRESS( byte2 X ){
+void ADD_TO_ADRESS( uint16_t X ){
 	I += V[X];
 }
 
-void GET_DELAY( byte2 X ){
+void GET_DELAY( uint16_t X ){
 	V[X] = delay_timer;
 }
 
-void SET_DELAY( byte2 X){
+void SET_DELAY( uint16_t X){
 	delay_timer = V[X];	
 }
 
-void SET_SOUND_TIMER( byte2 X ){
+void SET_SOUND_TIMER( uint16_t X ){
 	sound_timer = V[X];
 }
