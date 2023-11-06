@@ -186,11 +186,11 @@ void draw_screen( SDL_Surface *screenSurface ){
 		pixel.w = 10;
 		pixel.h = 10;
 
-		for( uint8_t i = 0; i < MAX_WIDTH; ++i ){
-			for( uint8_t j = 0; j < MAX_HEIGHT; ++j){
-				pixel.x = i * 10;
-				pixel.y = j * 10;
-				if( display[i][j] == ON){
+		for( uint8_t y = 0; y < MAX_HEIGHT; ++y ){
+			for( uint8_t x = 0; x < MAX_WIDTH; ++x){
+				pixel.x = x * 10;
+				pixel.y = y * 10;
+				if( display[x][y] == ON){
 					SDL_FillRect( screenSurface, &pixel, 0xFFFFFF);
 				}else
 					SDL_FillRect( screenSurface, &pixel, 0x0);

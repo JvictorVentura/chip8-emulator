@@ -121,39 +121,19 @@ void RAND( uint16_t X, uint8_t byte ){
 }
 
 void DRAW( uint8_t X, uint8_t Y, uint16_t height, uint16_t address ){
-	uint8_t sprite[8][15];
-	uint8_t temp = 0;
-	uint8_t mask = 0x8;
-	for(uint8_t y = 0; y < height; ++y){
-		temp = ram[address++];
-		mask= 0x8;
-		for(uint8_t x = 0; x < 8; ++x, mask>>=1){
-			if((temp & mask) != 0)
-				sprite[x][y] = ON;
-			else
-				sprite[x][y] = OFF;
+	uint8_t sprite[height];	
+	uint8_t area_of_display[15];
+	uint8_t XOR_result[15];
 
-		}
-	}
+	get_sprite(sprite, height, address);
+	get_area_of_display(V[X], V[Y], area_of_display, height);
+	XOR_sprite_area_of_display( sprite, area_of_display, XOR_result, height);
+	if( collision_check( area_of_display, XOR_result, height) == TRUE)
+		V[0xF] = 1;
+	else
+		V[0xF] = 0;
 
-	uint8_t X_coordinate = V[X];
-	uint8_t Y_coordinate = V[Y];
-
-	V[0xF] = 0;
-
-	for(uint8_t y = 0; y < height; ++y){
-		for(uint8_t x = 0; x < 8; ++x){
-			if(X_coordinate >= MAX_WIDTH) X_coordinate = 0;
-			if(Y_coordinate >= MAX_HEIGHT) Y_coordinate = 0;			
-			
-			if(display[X_coordinate][Y_coordinate] == ON && sprite[x][y] == ON){
-				V[0xF] = 1;
-				display[X_coordinate][Y_coordinate] = OFF;
-			}else
-				display[X_coordinate][Y_coordinate] = sprite[x][y];
-	
-		}
-	}	
+	write_to_display( V[X], V[Y], XOR_result, height);
 }
 
 

@@ -215,8 +215,65 @@ void update_Key_Pressed(){
 }
 
 
-void getSprite(uint8_t *sprite[8], uint8_t sprite_height, uint16_t address){
+void get_sprite(uint8_t sprite[], uint8_t sprite_height, uint16_t address){
 	for(short i = 0; i < sprite_height; ++i){
-		*sprite[i] = ram[address];
+		sprite[i] = ram[address];
+	}
+}
+
+void get_area_of_display(uint8_t X_coordinate,uint8_t Y_coordinate, uint8_t area_of_display[], uint8_t height){
+	uint8_t temp_line;
+	uint8_t X_offset = 0;
+	uint8_t Y_offset = 0;
+
+  for(uint8_t line = 0; line < height; ++line){
+	  temp_line = 0;
+		X_offset = 0;
+    for(uint8_t pixel = 0b10000000; pixel > 0; pixel >>= 1){
+      if(display[X_coordinate + X_offset][Y_coordinate + Y_offset] == ON){
+        temp_line += pixel;
+      }
+			X_offset++;
+    }
+   area_of_display[line] = temp_line;
+	 Y_offset++;
+  }
+
+}
+
+void XOR_sprite_area_of_display(uint8_t sprite[], uint8_t area_of_display[], uint8_t result[], uint8_t height){
+	for(uint8_t line = 0; line < height; ++line){
+		result[line] = sprite[line] ^ area_of_display[line];	
+	}
+}
+
+uint8_t collision_check(uint8_t BEFORE_area_of_display[], uint8_t AFTER_area_of_display[], uint8_t height){
+	for(uint8_t line = 0; line < height; ++line){
+		for(uint8_t pixel = 0b10000000; pixel > 0; pixel >>= 1){
+			if((BEFORE_area_of_display[line] & pixel) == pixel){
+				if((AFTER_area_of_display[line] & pixel) != pixel)
+					return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
+void write_to_display(uint8_t X_coordinate, uint8_t Y_coordinate, uint8_t xor_result[], uint8_t height){
+	uint8_t X_offset = 0;
+	uint8_t Y_offset = 0;
+
+	for(uint8_t line = 0; line < height; ++line){
+		X_offset = 0;
+		for(uint8_t pixel = 0b10000000; pixel > 0; pixel >>= 1){
+			if( (xor_result[line] & pixel) == pixel)
+				display[X_coordinate + X_offset][Y_coordinate + Y_offset] = ON;
+			//else
+				//display[X_coordinate + X_offset][Y_coordinate + Y_offset] = OFF;
+
+			X_offset++;
+		}
+		Y_offset++;
 	}
 }
