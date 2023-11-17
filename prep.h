@@ -217,7 +217,7 @@ void update_Key_Pressed(){
 
 void get_sprite(uint8_t sprite[], uint8_t sprite_height, uint16_t address){
 	for(short i = 0; i < sprite_height; ++i){
-		sprite[i] = ram[address];
+		sprite[i] = ram[address + i];
 	}
 }
 
