@@ -226,11 +226,27 @@ void get_area_of_display(uint8_t X_coordinate,uint8_t Y_coordinate, uint8_t area
 	uint8_t X_offset = 0;
 	uint8_t Y_offset = 0;
 
+	uint8_t X_final = 0;
+	uint8_t Y_final = 0;
+
   for(uint8_t line = 0; line < height; ++line){
 	  temp_line = 0;
 		X_offset = 0;
+
+		Y_final = (Y_coordinate + Y_offset) & 31;	// by ANDing with this number, it ensures it will not suprass this value
+		// boundary check ----
+		//if( Y_final >= MAX_HEIGHT)
+		//	Y_final -= MAX_HEIGHT;
+		//-----
+
     for(uint8_t pixel = 0b10000000; pixel > 0; pixel >>= 1){
-      if(display[X_coordinate + X_offset][Y_coordinate + Y_offset] == ON){
+			X_final = (X_coordinate + X_offset) & 63; // by ANDing with this number, it ensures it will not suprass this value
+			// boundary check ----
+			//if( X_final >= MAX_WIDTH)
+			//	X_final -= MAX_WIDTH;
+			//------
+			printf("X=%d\tY=%d\n", (X_final), (Y_final));
+      if(display[X_final][Y_final] == ON){
         temp_line += pixel;
       }
 			X_offset++;
@@ -264,13 +280,30 @@ void write_to_display(uint8_t X_coordinate, uint8_t Y_coordinate, uint8_t xor_re
 	uint8_t X_offset = 0;
 	uint8_t Y_offset = 0;
 
+	uint8_t X_final = 0;
+	uint8_t Y_final = 0;
+
 	for(uint8_t line = 0; line < height; ++line){
 		X_offset = 0;
+
+		Y_final = (Y_coordinate + Y_offset) & 31;	// by ANDing with this number, it ensures it will not suprass this value
+		// boundary check ----
+		//if( Y_final >= MAX_HEIGHT)
+		//	Y_final -= MAX_HEIGHT;
+		//-----
+
 		for(uint8_t pixel = 0b10000000; pixel > 0; pixel >>= 1){
+			X_final = (X_coordinate + X_offset) & 63;	// by ANDing with this number, it ensures it will not suprass this value
+			// boundary check ----
+			//if( X_final >= MAX_WIDTH)
+			//	X_final -= MAX_WIDTH;
+			//------
+			//printf("X=%d\tY=%d\n", X_final, Y_final);
+			
 			if( (xor_result[line] & pixel) == pixel)
-				display[X_coordinate + X_offset][Y_coordinate + Y_offset] = ON;
-			//else
-				//display[X_coordinate + X_offset][Y_coordinate + Y_offset] = OFF;
+				display[X_final][Y_final] = ON;
+			else
+				display[X_final][Y_final] = OFF;
 
 			X_offset++;
 		}
