@@ -21,6 +21,8 @@ unsigned short int stack[16];
 uint8_t stack_pointer;
 uint8_t Key = 0;
 uint16_t opcode = 0;
+
+uint8_t update_screen = 0;
  
   uint8_t ram[4096]= {
       0xF0, 0x90, 0x90, 0x90, 0xF0, // 0

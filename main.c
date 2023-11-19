@@ -235,8 +235,6 @@ int main(int argc, char **argv){
 
 	if(argc == 2){
 		arq = fopen(argv[1], "r");
-	}else{
-		//arq = fopen("./test_opcode.ch8", "r");
 	}
 	
 	
@@ -277,8 +275,14 @@ int main(int argc, char **argv){
 					update_Key_Pressed();
 					fetch_opcode();
 					decode_and_execute_opcode();
-					draw_screen( screenSurface );
-					SDL_UpdateWindowSurface( window );	
+					if(update_screen == 1){
+
+						draw_screen( screenSurface );
+						SDL_UpdateWindowSurface( window );
+
+						update_screen = 0;
+					}
+						
 					
 
 					if(Key == 0x10)

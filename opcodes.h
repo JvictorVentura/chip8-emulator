@@ -9,6 +9,7 @@ void CLEAR_DISPLAY(){
 		for(uint8_t y = 0; y < MAX_HEIGHT; ++y)
 			display[x][y] = OFF;
 	}
+	update_screen = 1;
 }
 
 void CALL_SUBROUTINE(uint16_t address){
@@ -124,21 +125,18 @@ void DRAW( uint8_t X, uint8_t Y, uint16_t height, uint16_t address ){
 	uint8_t sprite[height];	
 	uint8_t area_of_display[15];
 	uint8_t XOR_result[15];
+	V[0xF] = 0;
 
-	printf("1\n");
 	get_sprite(sprite, height, address);
-	printf("2\n");
 	get_area_of_display(V[X], V[Y], area_of_display, height);
-	printf("3\n");
 	XOR_sprite_area_of_display( sprite, area_of_display, XOR_result, height);
-	printf("4\n");
+
 	if( collision_check( area_of_display, XOR_result, height) == TRUE)
 		V[0xF] = 1;
-	else
-		V[0xF] = 0;
+	
 
 	write_to_display( V[X], V[Y], XOR_result, height);
-	printf("5\n");
+	update_screen = 1;
 }
 
 
