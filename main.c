@@ -11,7 +11,7 @@ void decode_and_execute_opcode(){
 	uint8_t X = Get_RegisterX(opcode);
 	uint8_t Y = Get_RegisterY(opcode);
 	uint8_t byte = Get_Byte(opcode);
-	uint16_t adress = Get_Address(opcode);	
+	uint16_t address = Get_Address(opcode);	
 	uint8_t lastBits = Get_Last_Bits(opcode); 
 
 	
@@ -28,11 +28,11 @@ void decode_and_execute_opcode(){
 		break;
 		
 		case 0x1000:
-				JMP(adress);
+				JMP(address);
 		break;
 
 		case 0x2000:
-				CALL_SUBROUTINE(adress);
+				CALL_SUBROUTINE(address);
 		break;
 		
 		case 0x3000:
@@ -102,11 +102,11 @@ void decode_and_execute_opcode(){
 		break;
 
 		case 0xA000:
-				LOAD_ADRESS(adress);	
+				LOAD_ADDRESS(address);	
 		break;
 		
 		case 0xB000:
-				JUMP2(adress);
+				JUMP2(address);
 		break;
 
 		case 0xC000:
@@ -148,11 +148,11 @@ void decode_and_execute_opcode(){
 					break;
 
 					case 0x001E:
-							ADD_TO_ADRESS(X);
+							ADD_TO_ADDRESS(X);
 					break;
 
 					case 0x0029:
-							SET_ADRESS_SPRITE(X);
+							SET_ADDRESS_SPRITE(X);
 					break;
 
 					case 0x0033:

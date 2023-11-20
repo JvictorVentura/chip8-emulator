@@ -105,7 +105,7 @@ void SHIFT_LEFT( uint16_t X ){
 	V[X] <<= 1;
 }
 
-void LOAD_ADRESS( uint16_t address ){
+void LOAD_ADDRESS( uint16_t address ){
 	I = address;	
 }
 
@@ -155,7 +155,7 @@ void WAIT_FOR_KEY( uint16_t X ){
 	V[X] = Get_Key();
 }
 
-void SET_ADRESS_SPRITE( uint16_t X ){
+void SET_ADDRESS_SPRITE( uint16_t X ){
 	I = V[X] * 5;	
 }
 
@@ -179,7 +179,7 @@ void LOAD_REGISTERS( uint16_t X ){
 		V[j] = ram[I + j];	
 }
 
-void ADD_TO_ADRESS( uint16_t X ){
+void ADD_TO_ADDRESS( uint16_t X ){
 	I += V[X];
 }
 
