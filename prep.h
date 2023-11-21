@@ -247,7 +247,7 @@ void get_area_of_display(uint8_t X_coordinate,uint8_t Y_coordinate, uint8_t area
 			//if( X_final >= MAX_WIDTH)
 			//	X_final -= MAX_WIDTH;
 			//------
-			printf("X=%d\tY=%d\n", (X_final), (Y_final));
+			//printf("X=%d\tY=%d\n", (X_final), (Y_final));
       if(display[X_final][Y_final] == ON){
         temp_line += pixel;
       }

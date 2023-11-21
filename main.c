@@ -6,6 +6,175 @@ void fetch_opcode(){
 	PC += 2;
 }
 
+void print_instruction(){
+	//printf("
+
+	switch(opcode & 0xF000){
+		case 0x0000:
+				switch(opcode & 0x0FFF){
+					case 0x00E0:
+								printf("CLEAR_DISPLAY();");
+					break;
+					case 0x00EE:
+								printf("RETURN_SUBROUTINE();");
+					break;
+				}	
+		break;
+		
+		case 0x1000:
+				printf("JMP(address);");
+		break;
+
+		case 0x2000:
+				printf("CALL_SUBROUTINE(address);");
+		break;
+		
+		case 0x3000:
+				printf("IF_BYTE(X, byte);");
+		break;
+		
+		case 0x4000:
+				printf("IF_NOT_BYTE(X, byte);");
+		break;
+
+		case 0x5000:
+				printf("IF_VAR(X, Y);");
+		break;
+		
+		case 0x9000:
+				printf("IF_NOT_VAR(X, Y);");
+		break;
+
+		case 0x6000:
+				printf("LOAD_BYTE(X, byte);");
+		break;
+
+		case 0x7000:
+				printf("ADD(X, byte);");
+		break;
+
+		case 0x8000:
+				switch(opcode & 0x000F){
+						case 0x0000:
+								printf("LOAD_VAR(X, Y);");	
+						break;	
+						
+						case 0x0001:
+								printf("OR(X, Y);");
+						break;	
+						
+						case 0x0002:
+								printf("AND(X, Y);");
+						break;
+						
+						case 0x0003:
+								printf("XOR(X, Y);");
+						break;
+						
+						case 0x0004:
+								printf("ADD_CARRY(X, Y);");
+						break;
+	
+						case 0x0005:
+								printf("SUB_Y_FROM_X(X, Y);");
+						break;
+							
+						case 0x0007:
+								printf("SUB_X_FROM_Y(X, Y);");
+						break;
+
+						case 0x0006:
+								printf("SHIFT_RIGHT(X);");
+						break;
+
+						case 0x000E:
+								printf("SHIFT_LEFT(X);");
+						break;
+						
+				}		
+		
+		break;
+
+		case 0xA000:
+				printf("LOAD_ADDRESS(address);");	
+		break;
+		
+		case 0xB000:
+				printf("JUMP2(address);");
+		break;
+
+		case 0xC000:
+				printf("RAND( X, byte);");
+				// printf("numero aleatorio = %d\n", V[X]);
+				// printf("uint8_t = %02x\n\n", byte);
+		break;
+
+		case 0xD000:
+				printf("DRAW(X, Y, lastBits, I);");
+		break;
+
+		case 0xE000:
+				switch(opcode & 0x00FF){
+	
+					case 0x009E:
+							printf("IS_KEY_PRESSED(X);");	
+					break;
+
+					case 0x00A1:
+							printf("IS_KEY_NOT_PRESSED(X);");
+					break;
+
+				}
+		break;
+		case 0xF000:
+				switch(opcode & 0x00FF){
+
+					case 0x0007:
+							printf("GET_DELAY(X);");
+					break;
+	
+					case 0x000A:
+							printf("WAIT_FOR_KEY(X);");	
+					break;
+
+					case 0x0018:
+							printf("SET_SOUND_TIMER(X);");
+					break;
+
+					case 0x001E:
+							printf("ADD_TO_ADDRESS(X);");
+					break;
+
+					case 0x0029:
+							printf("SET_ADDRESS_SPRITE(X);");
+					break;
+
+					case 0x0033:
+							printf("BINARY_CODED_DECIMAL(X);");
+					break;
+
+					case 0x0055:
+							printf("DUMP_REGISTERS(X);");
+					break;
+
+					case 0x0065:
+							printf("LOAD_REGISTERS(X);");
+					break;
+
+					case 0x0015:
+							printf("SET_DELAY(X);");
+					break;
+
+				}
+			break;	
+		
+		default:
+			printf("opcode nao reconhecido\n");
+	}
+
+		printf("\n");
+
+}
 
 void decode_and_execute_opcode(){
 	uint8_t X = Get_RegisterX(opcode);
@@ -14,6 +183,7 @@ void decode_and_execute_opcode(){
 	uint16_t address = Get_Address(opcode);	
 	uint8_t lastBits = Get_Last_Bits(opcode); 
 
+	print_instruction();
 	
 	switch(opcode & 0xF000){
 		case 0x0000:
