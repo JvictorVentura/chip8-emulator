@@ -26,12 +26,12 @@ void RETURN_SUBROUTINE(){
 
 void IF_BYTE( uint16_t X, uint8_t byte){
 	if(V[X] == byte)
-		PC += 2; //talvez mudar dps	
+		PC += 2; 	
 }
 
 void IF_NOT_BYTE( uint16_t X, uint8_t byte){
 	if(V[X] != byte)
-		PC += 2; //talvez mudar dps
+		PC += 2; 
 }
 
 void IF_VAR( uint16_t X, uint16_t Y){
@@ -57,12 +57,15 @@ void ADD( uint16_t X, uint8_t byte){
 }
 
 void ADD_CARRY( uint16_t X, uint16_t Y){
-	if( (V[X] + V[Y]) > 255)
+	uint16_t result = V[X] + V[Y];
+	
+	V[X] = result;
+
+	if( result > 255)
 		V[0xF] = 1;
 	else
 		V[0xF] = 0;
 
-	V[X] += V[Y];
 }
 
 void OR( uint16_t X, uint16_t Y){
@@ -78,31 +81,43 @@ void XOR( uint16_t X, uint16_t Y){
 }
 
 void SUB_Y_FROM_X( uint16_t X, uint16_t Y){
-	if(V[X] > V[Y])
-		V[0xF] = 1;
-	else
-		V[0xF] = 0;	
+	uint16_t result = V[X] - V[Y];
+	uint8_t carry_temp;
 
-	V[X] -= V[Y];
+	if(V[X] >= V[Y])	//most documentation doesnt say it has to be greater OR EQUAL. It just say greater.
+		carry_temp = 1;	
+	else
+		carry_temp = 0;
+
+	V[X] = result;
+	V[0xF] = carry_temp;
 }
 
 void SUB_X_FROM_Y( uint16_t X, uint16_t Y){
-	if(V[Y] > V[X])
-		V[0xF] = 1;
-	else
-		V[0xF] = 0;	
+	uint16_t result = V[Y] - V[X];
+	uint8_t carry_temp;
+	//V[X] -= V[Y];
 
-	V[X] = V[Y] - V[X];
+	if(V[Y] >= V[X])
+		carry_temp = 1;	
+	else
+		carry_temp = 0;
+
+	V[X] = result;
+	V[0xF] = carry_temp;
 }
 
 void SHIFT_RIGHT( uint16_t X ){
-	V[0xF] = Check_least_significant_bit( V[X] );
+
+	uint8_t carry = Check_least_significant_bit( V[X] );
 	V[X] >>= 1;	
+	V[0xF] = carry;
 }
 
 void SHIFT_LEFT( uint16_t X ){
-	V[0xF] = Check_most_significant_bit( V[X] );
+	uint8_t carry = Check_most_significant_bit( V[X] );
 	V[X] <<= 1;
+	V[0xF] = carry;
 }
 
 void LOAD_ADDRESS( uint16_t address ){

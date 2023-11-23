@@ -182,6 +182,24 @@ void decode_and_execute_opcode(){
 	uint8_t byte = Get_Byte(opcode);
 	uint16_t address = Get_Address(opcode);	
 	uint8_t lastBits = Get_Last_Bits(opcode); 
+	
+	//uint8_t x = (opcode >> 8) & 0x0F;
+	//uint8_t y = (opcode >> 4) & 0x0F;
+	//uint8_t nibble = opcode & 0x0F;
+	//uint16_t nnn = opcode & 0x0FFF;
+	//uint8_t kk = opcode & 0xFF;
+
+	//printf("X: %d || %d\n", X, x);
+	//printf("Y: %d || %d\n", Y, y);
+	//printf("byte/kk: %d || %d\n", byte, kk);
+	//printf("address/nnn: %d || %d\n", address, nnn);
+	//printf("lastBits/nibble: %d || %d\n\n\n", lastBits, nibble);
+
+	//uint8_t X = (opcode >> 8) & 0x0F;
+	//uint8_t Y = (opcode >> 4) & 0x0F;
+	//uint8_t byte = opcode & 0x0FF;
+	//uint16_t address = opcode & 0x0FFF;	
+	//uint8_t lastBits = opcode & 0x0F;
 
 	print_instruction();
 	
