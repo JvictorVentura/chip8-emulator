@@ -36,12 +36,12 @@ void IF_NOT_BYTE( uint16_t X, uint8_t byte){
 
 void IF_VAR( uint16_t X, uint16_t Y){
 	if(V[X] == V[Y])
-		PC += 2; //talvez mudar dps
+		PC += 2; 
 }
 
 void IF_NOT_VAR( uint16_t X, uint16_t Y){
 	if(V[X] != V[Y])
-		PC += 2; //talvez mudar dps
+		PC += 2; 
 }
 
 void LOAD_BYTE( uint16_t X, uint8_t byte){
@@ -96,7 +96,6 @@ void SUB_Y_FROM_X( uint16_t X, uint16_t Y){
 void SUB_X_FROM_Y( uint16_t X, uint16_t Y){
 	uint16_t result = V[Y] - V[X];
 	uint8_t carry_temp;
-	//V[X] -= V[Y];
 
 	if(V[Y] >= V[X])
 		carry_temp = 1;	
@@ -131,8 +130,6 @@ void JUMP2( uint16_t address){
 void RAND( uint16_t X, uint8_t byte ){
 	srand(time(0));
 	uint8_t random = rand();
-	//printf("random = %d\n", random);
-	//printf("V[X] = %d\n", random & byte);
 	V[X] = random & byte;
 }
 

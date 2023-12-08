@@ -7,7 +7,6 @@ void fetch_opcode(){
 }
 
 void print_instruction(){
-	//printf("
 
 	switch(opcode & 0xF000){
 		case 0x0000:
@@ -105,8 +104,6 @@ void print_instruction(){
 
 		case 0xC000:
 				printf("RAND( X, byte);");
-				// printf("numero aleatorio = %d\n", V[X]);
-				// printf("uint8_t = %02x\n\n", byte);
 		break;
 
 		case 0xD000:
@@ -183,25 +180,7 @@ void decode_and_execute_opcode(){
 	uint16_t address = Get_Address(opcode);	
 	uint8_t lastBits = Get_Last_Bits(opcode); 
 	
-	//uint8_t x = (opcode >> 8) & 0x0F;
-	//uint8_t y = (opcode >> 4) & 0x0F;
-	//uint8_t nibble = opcode & 0x0F;
-	//uint16_t nnn = opcode & 0x0FFF;
-	//uint8_t kk = opcode & 0xFF;
-
-	//printf("X: %d || %d\n", X, x);
-	//printf("Y: %d || %d\n", Y, y);
-	//printf("byte/kk: %d || %d\n", byte, kk);
-	//printf("address/nnn: %d || %d\n", address, nnn);
-	//printf("lastBits/nibble: %d || %d\n\n\n", lastBits, nibble);
-
-	//uint8_t X = (opcode >> 8) & 0x0F;
-	//uint8_t Y = (opcode >> 4) & 0x0F;
-	//uint8_t byte = opcode & 0x0FF;
-	//uint16_t address = opcode & 0x0FFF;	
-	//uint8_t lastBits = opcode & 0x0F;
-
-	print_instruction();
+//	print_instruction();
 	
 	switch(opcode & 0xF000){
 		case 0x0000:
@@ -299,8 +278,6 @@ void decode_and_execute_opcode(){
 
 		case 0xC000:
 				RAND( X, byte);
-				// printf("numero aleatorio = %d\n", V[X]);
-				// printf("uint8_t = %02x\n\n", byte);
 		break;
 
 		case 0xD000:
@@ -366,7 +343,6 @@ void decode_and_execute_opcode(){
 			printf("opcode nao reconhecido\n");
 	}
 	
-	// printf("%x\n", opcode);
 }
 
 void draw_screen( SDL_Surface *screenSurface ){
@@ -443,7 +419,7 @@ int main(int argc, char **argv){
 
 	SDL_Surface *screenSurface = NULL;
 
-	if(SDL_Init(SDL_INIT_VIDEO < 0)){
+	if(SDL_Init(SDL_INIT_VIDEO ) < 0){
 			printf("Erro: %s\n", SDL_GetError());			
 	}else{
 			window = SDL_CreateWindow("Chip8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, MAX_WIDTH * 10, MAX_HEIGHT * 10, SDL_WINDOW_SHOWN);
