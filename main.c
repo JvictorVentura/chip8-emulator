@@ -430,13 +430,13 @@ int main(int argc, char **argv){
 				screenSurface = SDL_GetWindowSurface(window);
 
 				CLEAR_DISPLAY();
-				unsigned short int quit = FALSE;
-				unsigned short cycle = 0;
-				unsigned short timer_cycle = 0;
+			 	uint8_t quit = FALSE;
+				uint8_t cycle = 0;
+				uint8_t timer_cycle = 0;
 
 				while(quit == FALSE){
 
-					update_Key_Pressed();
+					update_Key_Pressed(&quit);
 					fetch_opcode();
 					decode_and_execute_opcode();
 					if(update_screen == 1){

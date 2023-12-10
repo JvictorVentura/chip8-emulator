@@ -150,10 +150,12 @@ uint8_t Get_Last_Bits( uint16_t opcode){
 	return opcode & 0x000F;
 }
 
-void update_Key_Pressed(){
+void update_Key_Pressed(uint8_t *quit){
 	SDL_Event event;
 
 		while(SDL_PollEvent(&event)){
+			if (event.type == SDL_QUIT)
+				*quit = TRUE;
 			if(event.key.state == SDL_RELEASED)
 				Key = 0x0;	
 			else{
